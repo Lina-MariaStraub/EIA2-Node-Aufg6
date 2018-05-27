@@ -1,35 +1,25 @@
 namespace L06_Interfaces {
     window.addEventListener( "load", init );
-
    // let address: string = "https://eia2node257455.herokuapp.com/"; 
-    let address: string = "https://eia2aufg6von257767.herokuapp.com/";
+    let address: string = "https://eia2aufg6von257767.herokuapp.com/";                              //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     function init( _event: Event ): void {
         console.log( "Init" );
-
         //Enventlistener auf Button übergeben
         let insertButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "insert" );
         let searchButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "search" );
-        let refreshButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "refresh" );
-        
-        //Button für drei Bespieldatensätze
-        
+        let refreshButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "refresh" ); 
+        //Button für drei Bespieldatensätze 
         let exampleButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "exampleData" );
-        insertButton.addEventListener( "click", insert );
-        
-        //Wenn geklickt wird führe refreshStudents aus
-        
+        insertButton.addEventListener( "click", insert );  
+        //Wenn geklickt wird führe refreshStudents aus  
         refreshButton.addEventListener( "click", refreshStudents );
         searchButton.addEventListener( "click", search );
         exampleButton.addEventListener( "click", exampleData )
     }
-
-    
     //Drei Datensatzbeispiele
     function exampleData() {
-        for (let i = 0; i < 3; i++) {
-            
+        for (let i = 0; i < 3; i++) {      
             //Zugriff auf Interface
-            
             let student: L06_Interfaces.Studi = {
                 name: "Nachname " + i,
                 firstname: "Jeff" + i,
@@ -38,14 +28,10 @@ namespace L06_Interfaces {
                 gender: !!Math.round(Math.random()),
                 studiengang: "OMB"
             }
-        
             //Funktion sendDataToHost, Variable student wird übergeben
-        
             sendDataToHost("addStudent", student)
         }
     }
-
-
     //Funktion um Daten der Studenten zu speichern
     function insert( _event: Event ): void {
         let inputs: NodeListOf<HTMLInputElement> = document.getElementsByTagName( "input" );
@@ -65,14 +51,11 @@ namespace L06_Interfaces {
 
         console.log( studi );
         console.log( studi.age );
-        
         console.log( studi["age"] );
 
-        // Datensatz im assoziativen Array unter der Matrikelnummer speichern
-        studiHomoAssoc[matrikel] = studi;
+        studiHomoAssoc[matrikel] = studi;// Datensatz im assoziativen Array unter der Matrikelnummer speichern
 
-        // nur um das auch noch zu zeigen...
-        studiSimpleArray.push( studi );
+        studiSimpleArray.push( studi );   // nur um das auch noch zu zeigen...
         
         //Funktion sendDataToHost, Objekt studi wird übergeben
         //Methode addStudent
@@ -101,8 +84,7 @@ namespace L06_Interfaces {
             output.value += line + "\n";
         }
 
-        // zusätzliche Konsolenausgaben zur Demonstration
-        console.group( "Simple Array" );
+        console.group( "Simple Array" ); // zusätzliche Konsolenausgaben zur Demonstration
         console.log( studiSimpleArray );
         console.groupEnd();
 
@@ -115,23 +97,18 @@ namespace L06_Interfaces {
     //Funktion search aufstellen
     function search( _event: Event ): void {
 
-
         //Auf erste Textarea zugreifen
         let output: HTMLTextAreaElement = document.getElementsByTagName( "textarea" )[0];
-
         output.value = "";
 
-        //Zugriff auf Inputs
-        let inputs: NodeListOf<HTMLInputElement> = document.getElementsByTagName( "input" );
+        let inputs: NodeListOf<HTMLInputElement> = document.getElementsByTagName( "input" );//Zugriff auf Inputs
 
-        //Matrikel wird aufgerufen durch den 6. Input
-        let matrikel: string = inputs[6].value;
+        let matrikel: string = inputs[6].value; //Matrikel wird aufgerufen durch den 6. Input
 
         //Matrikelnummer wird gespeichert
         let studi: Studi = studiHomoAssoc[matrikel];
 
         if ( studi ) {
-            
             //Übereinstimmung mit Student
             let line: string = matrikel + ": ";
             line += studi.name + ", " + studi.firstname + ", " + studi.age + " Jahre ";
@@ -139,8 +116,7 @@ namespace L06_Interfaces {
             line += studi.studiengang + ": ";
             output.value += line + "\n";
             
-        //Keine Übereinstimmung mit Student
-        } else {
+        } else { //Keine Übereinstimmung mit Student
             alert( "Es wurde kein Student gefunden, bitte versuchen sie es noch einmal." );
         }
     }
@@ -150,48 +126,31 @@ namespace L06_Interfaces {
     //data: any = undefined -> Optionalparameter, muss nicht unbedingt angeben werden(Daten werden schon übergeben)
     function sendDataToHost(method: string, data: any = undefined) {
         
-        //Ausgabe wenn Daten zum Server gesendet werden
+        console.log("Sending data to host..");  //Ausgabe wenn Daten zum Server gesendet werden
         
-        console.log("Sending data to host..");
+        let xhr: XMLHttpRequest = new XMLHttpRequest(); //Variable xhr, XMLHttpRequest wird erstellt
         
-        //Variable xhr, XMLHttpRequest wird erstellt
-        
-        let xhr: XMLHttpRequest = new XMLHttpRequest();
-        
-        //Dataobjekt wird in ein string umgewandelt, damit es zum Server gesendet werden kann
-        
-        let dataString: string = JSON.stringify(data);
+        let dataString: string = JSON.stringify(data); //Dataobjekt wird in ein string umgewandelt, damit es zum Server gesendet werden kann
         
         //true= asynchron
         //Neue Http Request wird geöffnet
         xhr.open("GET", address + method + "?method=" + method + "&data=" + encodeURIComponent(dataString), true);
-
-        //Überprüfen welche Methode ausgeführt werden soll
         
-        if (method == "addStudent") {
+        if (method == "addStudent") {//Überprüfen welche Methode ausgeführt werden soll
             
-            //Sobald eine Antwort ankommt schreibe die Antwort in die Konsole
-            
-            xhr.onload = function () {
+            xhr.onload = function () { //Sobald eine Antwort ankommt schreibe die Antwort in die Konsole
                 console.log(xhr.responseText)
             }
         }
         else if (method == "refreshStudents") {
             xhr.onload = function () {
                 
-              //Sobald eine Antwort ankommt ersetze studiHomoAssoc mit der Antwort und führe die Methode refresh aus
+                console.log('Refreshing Students...');//Sobald eine Antwort ankommt ersetze studiHomoAssoc mit der Antwort und führe die Methode refresh aus
                 
-                console.log('Refreshing Students...');
-                
-                //Überschreibe studiHomoAssoc mit der Antwort
-                
-                studiHomoAssoc = JSON.parse(xhr.responseText);
+                studiHomoAssoc = JSON.parse(xhr.responseText);//Überschreibe studiHomoAssoc mit der Antwort
                 refresh();
             }
         }
-        
-        //Sende Request zum Server
-        
-        xhr.send();
+        xhr.send();  //Sende Request zum Server
     }
 }
